@@ -92,6 +92,8 @@ public class FusionGUI implements FusionExportInterface
 	public static boolean defaultAdjustIntensities = false;
 	public static boolean defaultPreserveAnisotropy = false;
 
+	public static boolean defaultClusterProcessing = false;
+
 	public final static ArrayList< ImgExport > staticImgExportAlgorithms = new ArrayList< ImgExport >();
 	public final static String[] imgExportDescriptions;
 	public static int defaultImgExportAlgorithm = 0;
@@ -108,6 +110,7 @@ public class FusionGUI implements FusionExportInterface
 	protected boolean preserveAnisotropy = defaultPreserveAnisotropy;
 	protected double avgAnisoF;
 	protected int imgExport = defaultImgExportAlgorithm;
+	protected boolean processOnCluster = defaultClusterProcessing;
 
 	protected NonRigidParametersGUI nrgui;
 
@@ -266,6 +269,9 @@ public class FusionGUI implements FusionExportInterface
 
 		gd.addChoice( "Fused_image", imgExportDescriptions, imgExportDescriptions[ defaultImgExportAlgorithm ] );
 
+		// ask for cluster processing
+		gd.addCheckbox( "Cluster Processing", defaultClusterProcessing );
+
 		gd.addMessage( "Estimated size: ", GUIHelper.largestatusfont, GUIHelper.good );
 		if ( !PluginHelper.isHeadless() )  label1 = (Label)gd.getMessage();
 		gd.addMessage( "???x???x??? pixels", GUIHelper.smallStatusFont, GUIHelper.good );
@@ -342,6 +348,9 @@ public class FusionGUI implements FusionExportInterface
 		splittingType = defaultSplittingType = gd.getNextChoiceIndex();
 		imgExport = defaultImgExportAlgorithm = gd.getNextChoiceIndex();
 
+		// ask for cluster processing
+		processOnCluster = defaultClusterProcessing = gd.getNextBoolean();
+
 		if ( this.nrgui.isActive() && this.nrgui.userSelectedAdvancedParameters() )
 			if ( !this.nrgui.advancedParameters() )
 				return false;
@@ -361,6 +370,7 @@ public class FusionGUI implements FusionExportInterface
 		IOFunctions.println( "Image Export: " + imgExportDescriptions[ imgExport ] );
 		IOFunctions.println( "ImgLoader.isVirtual(): " + isImgLoaderVirtual() );
 		IOFunctions.println( "ImgLoader.isMultiResolution(): " + isMultiResolution() );
+		IOFunctions.println( "Cluster processing: " + clusterProcessing() );
 
 		IOFunctions.println( "Non-Rigid active: " + this.nrgui.isActive() );
 		if ( this.nrgui.isActive() )
@@ -388,6 +398,8 @@ public class FusionGUI implements FusionExportInterface
 	}
 
 	public boolean isMultiResolution() { return isMultiResolution( spimData ); }
+	
+	public boolean clusterProcessing() { return processOnCluster; }
 
 	public static boolean isMultiResolution( final SpimData spimData )
 	{

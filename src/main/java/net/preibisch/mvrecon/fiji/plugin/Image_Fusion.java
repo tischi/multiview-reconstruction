@@ -32,7 +32,6 @@ import java.util.stream.Collectors;
 
 import com.google.common.collect.Sets;
 
-import ij.IJ;
 import ij.ImageJ;
 import ij.plugin.PlugIn;
 import mpicbg.spim.data.registration.ViewRegistration;
@@ -46,7 +45,6 @@ import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.converter.RealUnsignedShortConverter;
 import net.imglib2.converter.read.ConvertedRandomAccessibleInterval;
 import net.imglib2.img.ImagePlusAdapter;
-import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.img.imageplus.ImagePlusImgFactory;
 import net.imglib2.realtransform.AffineTransform3D;
 import net.imglib2.type.NativeType;
@@ -97,6 +95,21 @@ public class Image_Fusion implements PlugIn
 
 		if ( !fusion.queryDetails() )
 			return false;
+
+		if ( fusion.clusterProcessing() )
+		{
+			IOFunctions.println( "CLUSTER!!!");
+			fusion.getBoundingBox();
+
+			final List< Group< ViewDescription > > groups = fusion.getFusionGroups();
+
+			for ( Group<ViewDescription> group : groups )
+			{
+				IOFunctions.println( "group " + group );
+			}
+
+			return false;
+		}
 
 		final List< Group< ViewDescription > > groups = fusion.getFusionGroups();
 		int i = 0;
