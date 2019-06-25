@@ -100,6 +100,7 @@ like Selective Plane Illumination Microscopy (SPIM) Data.</description>
 		<license.copyrightOwners>Multiview Reconstruction developers.</license.copyrightOwners>
 
 		<multiview-simulation.version>0.2.0</multiview-simulation.version>
+		<imagej-clustering.version>0.0.2-SNAPSHOT</imagej-clustering.version>
 
 		<!-- NB: Deploy releases to the SciJava Maven repository. -->
 		<releaseProfiles>deploy-to-scijava</releaseProfiles>
@@ -113,6 +114,12 @@ like Selective Plane Illumination Microscopy (SPIM) Data.</description>
 	</repositories>
 
 	<dependencies>
+	<dependency>
+			<groupId>net.preibisch</groupId>
+			<artifactId>imagej-clustering</artifactId>
+			<version>${imagej-clustering.version}</version>
+		</dependency>
+		
 		<!-- BigDataViewer dependencies -->
 		<dependency>
 			<groupId>sc.fiji</groupId>
