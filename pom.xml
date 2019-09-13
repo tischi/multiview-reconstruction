@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-<parent>
+	<parent>
 		<groupId>org.scijava</groupId>
 		<artifactId>pom-scijava</artifactId>
 		<version>26.0.0</version>
 		<relativePath />
-</parent>
+	</parent>
 
 	<groupId>net.preibisch</groupId>
 	<artifactId>multiview-reconstruction</artifactId>
@@ -63,12 +65,16 @@ like Selective Plane Illumination Microscopy (SPIM) Data.</description>
 		<contributor>
 			<name>Tobias Pietzsch</name>
 			<url>https://imagej.net/User:Pietzsch</url>
-			<properties><id>tpietzsch</id></properties>
+			<properties>
+				<id>tpietzsch</id>
+			</properties>
 		</contributor>
 		<contributor>
 			<name>Curtis Rueden</name>
 			<url>https://imagej.net/User:Rueden</url>
-			<properties><id>ctrueden</id></properties>
+			<properties>
+				<id>ctrueden</id>
+			</properties>
 		</contributor>
 	</contributors>
 
@@ -101,7 +107,6 @@ like Selective Plane Illumination Microscopy (SPIM) Data.</description>
 		<license.copyrightOwners>Multiview Reconstruction developers.</license.copyrightOwners>
 
 		<multiview-simulation.version>0.2.0</multiview-simulation.version>
-		<imagej-clustering.version>0.2.1-SNAPSHOT</imagej-clustering.version>
 
 		<!-- NB: Deploy releases to the SciJava Maven repository. -->
 		<releaseProfiles>deploy-to-scijava</releaseProfiles>
@@ -112,15 +117,56 @@ like Selective Plane Illumination Microscopy (SPIM) Data.</description>
 			<id>scijava.public</id>
 			<url>https://maven.scijava.org/content/groups/public</url>
 		</repository>
+		<repository>
+			<id>saalfeld-lab-maven-repo</id>
+			<url>https://saalfeldlab.github.io/maven</url>
+		</repository>
 	</repositories>
 
 	<dependencies>
-	<dependency>
-			<groupId>net.preibisch</groupId>
-			<artifactId>imagej-clustering</artifactId>
-			<version>${imagej-clustering.version}</version>
+
+		<!-- Clustering dependencies -->
+		<dependency>
+			<groupId>org.janelia.saalfeldlab</groupId>
+			<artifactId>n5-imglib2</artifactId>
+			<version>3.4.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>info.picocli</groupId>
+			<artifactId>picocli</artifactId>
+			<version>3.9.2</version>
 		</dependency>
 		
+		<dependency>
+			<groupId>com.jcraft</groupId>
+			<artifactId>jsch</artifactId>
+			<version>0.1.54</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.kafka</groupId>
+			<artifactId>kafka_2.12</artifactId>
+			<version>1.1.0</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.scijava</groupId>
+			<artifactId>scijava-ui-swing</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.scijava</groupId>
+			<artifactId>scijava-common</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>net.imagej</groupId>
+			<artifactId>imagej</artifactId>
+		</dependency>
+		
+		<!-- End clustering dependencies -->
+
 		<!-- BigDataViewer dependencies -->
 		<dependency>
 			<groupId>sc.fiji</groupId>

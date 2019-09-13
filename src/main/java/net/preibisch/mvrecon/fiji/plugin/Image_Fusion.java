@@ -54,7 +54,6 @@ import net.imglib2.type.numeric.integer.UnsignedShortType;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.util.Pair;
 import net.imglib2.util.Util;
-import net.preibisch.distribution.headless.Clustering;
 import net.preibisch.mvrecon.Threads;
 import net.preibisch.mvrecon.fiji.plugin.fusion.FusionGUI;
 import net.preibisch.mvrecon.fiji.plugin.queryXML.GenericLoadParseQueryXML;
@@ -98,8 +97,10 @@ public class Image_Fusion implements PlugIn
 			return false;
 
 		if ( fusion.clusterProcessing() )
-		{
-			Clustering.run(fusion);
+		{ 
+//			Clustering c = new C
+//			new Clustering.perform(fusion);
+//			Clustering.per(fusion);
 
 			return false;
 		}
