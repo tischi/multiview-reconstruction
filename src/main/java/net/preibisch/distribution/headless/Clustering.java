@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.google.gson.JsonIOException;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
 
@@ -57,6 +56,7 @@ public class Clustering {
 	}
 
 	public static void run(FusionGUI fusion) {
+		System.out.println("Start clustering.. ");
 		String testFile = "/Users/Marwan/Desktop/Task/test.json";
 		if (fusion.getNonRigidParameters().isActive())
 			// taskPath = TaskFile.get(TaskFile.NON_RIGID);
@@ -66,16 +66,16 @@ public class Clustering {
 
 		{
 			String xml = Tools.getXML(fusion.getSpimData().getBasePath().getAbsolutePath()).getAbsolutePath();
+			System.out.println("XML: "+xml);
 			double downsampling = fusion.getDownsampling();
+			System.out.println("downsampling: "+downsampling);
 			Interval interval = fusion.getBoundingBox();
+			System.out.println("interval: "+interval.toString());
 			List<ViewId> viewIds = new ArrayList<>(fusion.getFusionGroups().get(0).getViews());
+			System.out.println("ViewsIds: "+viewIds.size());
 			FusionParams params = new FusionParams(xml, viewIds, interval, downsampling);
-			try {
+
 				params.toJson(testFile);
-			} catch (JsonIOException | IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 		}
 		return;
 
