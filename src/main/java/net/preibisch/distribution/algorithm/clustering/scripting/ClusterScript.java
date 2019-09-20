@@ -22,6 +22,9 @@ public class ClusterScript {
 			throws IOException {
 		generateTaskScript(TaskType.PROCESS, file, taskName, metadata, input, output, "");
 	}
+	public static void String (String[] params) {
+		
+	}
 
 	public static void generateTaskScript(TaskType type, File file, String taskName, String metadata, String input,
 			String output, String extraParams) throws IOException {
