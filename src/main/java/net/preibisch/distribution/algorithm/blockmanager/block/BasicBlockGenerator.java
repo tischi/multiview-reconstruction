@@ -3,6 +3,7 @@ package net.preibisch.distribution.algorithm.blockmanager.block;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.imglib2.Interval;
 import net.imglib2.iterator.LocalizingZeroMinIntervalIterator;
 import net.imglib2.util.Util;
 import net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
@@ -70,9 +71,9 @@ public class BasicBlockGenerator {
 		return blockinfosList;
 	}
 
-	public static Map<Integer, BasicBlockInfo> divideIntoBlocks(BoundingBox bb, long[] blockSize) {
+	public static Map<Integer, BasicBlockInfo> divideIntoBlocks(Interval bb, long[] blockSize) {
 
-		long[] imgSize = bb.getDimensions(1);
+		long[] imgSize = new BoundingBox(bb).getDimensions(1);
 		
 		final int numDimensions = blockSize.length;
 

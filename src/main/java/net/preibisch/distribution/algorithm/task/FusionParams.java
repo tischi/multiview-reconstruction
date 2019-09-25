@@ -10,16 +10,18 @@ import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 
 import mpicbg.spim.data.SpimDataException;
+import mpicbg.spim.data.sequence.ViewDescription;
 import mpicbg.spim.data.sequence.ViewId;
 import net.imglib2.Interval;
 import net.preibisch.distribution.algorithm.controllers.items.ViewIdMD;
 import net.preibisch.distribution.io.GsonIO;
 import net.preibisch.mvrecon.fiji.spimdata.SpimData2;
 import net.preibisch.mvrecon.fiji.spimdata.XmlIoSpimData2;
+import net.preibisch.mvrecon.process.interestpointregistration.pairwise.constellation.grouping.Group;
 
 public class FusionParams implements Params {
 	private String xml;
-	private List<? extends ViewIdMD> viewIds;
+	private List<List<ViewIdMD>> viewIds;
 	private Interval bb;
 	private double downsampling;
 
@@ -30,20 +32,40 @@ public class FusionParams implements Params {
 		GsonIO.toJson(this, path);
 
 	}
-
-	public FusionParams(String xml, List<? extends ViewId> viewIds, Interval bb, double downsampling) {
+	public List<List<ViewIdMD>> getViewMDIds() {
+		return viewIds;
+	}
+	
+	public List<List<ViewId>> getViewIds() {
+		List<List<ViewId>> ids = new ArrayList<>();
+		for(List<ViewIdMD> mds : viewIds) {
+			List<ViewId> tmp = new ArrayList<>();
+			for(ViewIdMD md: mds) {
+				tmp.add(md.toViewId());
+			}
+			ids.add(tmp);
+		}
+		return ids;
+	}
+	
+	public FusionParams(String xml, List<Group<ViewDescription>> list, Interval bb, double downsampling) {
 		super();
 		this.xml = xml;
-		this.viewIds = viewsID(viewIds);
+		this.viewIds = viewsID(list);
 		this.bb = bb;
 		this.downsampling = downsampling;
 	}
 
-	private List<? extends ViewIdMD> viewsID(List<? extends ViewId> viewIds) {
-		List<ViewIdMD> ids = new ArrayList<ViewIdMD>();
-		for(ViewId id: viewIds)
-			ids.add(new ViewIdMD(id));
-		return ids;
+	private List<List<ViewIdMD>> viewsID(List<Group<ViewDescription>> list) {
+		List<List<ViewIdMD>> groups = new ArrayList<>();
+		for(Group<ViewDescription> views:list) {
+			List<ViewId> viewIds = new ArrayList<>(views.getViews());
+			List<ViewIdMD> ids = new ArrayList<ViewIdMD>();
+			for(ViewId id: viewIds)
+				ids.add(new ViewIdMD(id));
+			groups.add(ids);
+		}
+		return groups;
 	}
 
 	public FusionParams fromJson(String path) throws JsonSyntaxException, JsonIOException, FileNotFoundException {
@@ -54,11 +76,7 @@ public class FusionParams implements Params {
 			params.setDownsampling(Double.NaN);
 		return params;
 	}
-	
-	public SpimData2 getSpim() throws SpimDataException {
-		return new XmlIoSpimData2( "" ).load(xml);
-	}
-	
+
 	@Override
 	public String toString() {
 		return "xml: "+xml+" | views: "+viewIds.size()+" | bb: "+bb+" | downsampling: "+downsampling;
@@ -86,6 +104,11 @@ public class FusionParams implements Params {
 
 	public void setDownsampling(double downsampling) {
 		this.downsampling = downsampling;
+	}
+
+	@Override
+	public SpimData2 getSpimData() throws SpimDataException {
+		return new XmlIoSpimData2( "" ).load(xml);
 	}
 
 }

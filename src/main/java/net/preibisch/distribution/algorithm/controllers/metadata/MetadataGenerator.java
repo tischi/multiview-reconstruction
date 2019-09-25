@@ -2,12 +2,12 @@ package net.preibisch.distribution.algorithm.controllers.metadata;
 
 import java.util.Map;
 
+import net.imglib2.Interval;
 import net.imglib2.util.Util;
 import net.preibisch.distribution.algorithm.blockmanager.block.BasicBlockGenerator;
 import net.preibisch.distribution.algorithm.blockmanager.block.BasicBlockInfo;
 import net.preibisch.distribution.algorithm.controllers.items.BlocksMetaData;
 import net.preibisch.distribution.algorithm.controllers.items.callback.AbstractCallBack;
-import net.preibisch.mvrecon.fiji.spimdata.boundingbox.BoundingBox;
 
 public class MetadataGenerator {
 		
@@ -27,12 +27,12 @@ public class MetadataGenerator {
 		}
 	}
 	
-	public static <T> Map<Integer, BasicBlockInfo> generateBlocks(BoundingBox bb, int[] blockSize) {
+	public static <T> Map<Integer, BasicBlockInfo> generateBlocks(Interval bb, int[] blockSize) {
 		return generateBlocks(bb,Util.int2long(blockSize), 0);
 	}
 	
 	
-	public static <T> Map<Integer, BasicBlockInfo> generateBlocks(BoundingBox bb, long[] blockSize, int overlap) {
+	public static <T> Map<Integer, BasicBlockInfo> generateBlocks(Interval bb, long[] blockSize, int overlap) {
 		
 		if ( overlap == 0 )
 		{

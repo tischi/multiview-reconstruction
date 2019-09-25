@@ -23,4 +23,8 @@ public class ViewIdMD {
 	public int getTimepoint() {
 		return timepoint;
 	}
+	
+	public ViewId toViewId() {
+		return new ViewId(timepoint, setup);
+	}
 }

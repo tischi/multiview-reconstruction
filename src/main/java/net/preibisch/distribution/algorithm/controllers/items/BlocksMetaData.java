@@ -6,7 +6,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.List;
 import java.util.Map;
 
 import com.google.gson.Gson;
@@ -14,7 +13,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 
-import mpicbg.spim.data.sequence.ViewId;
 import net.imglib2.util.Util;
 import net.preibisch.distribution.algorithm.blockmanager.BlockConfig;
 import net.preibisch.distribution.algorithm.blockmanager.block.BasicBlockInfo;
@@ -22,32 +20,26 @@ import net.preibisch.distribution.algorithm.task.SerializingFunctions;
 
 public class BlocksMetaData extends SerializingFunctions {
 	private int total;
-	private long[] dimensions;
 	private long[] blocksize;
 	private int blockUnit;
-	private int downsample;
 	private String jobId;
 	private Map<Integer, BasicBlockInfo> blocksInfo;
-	private List<ViewIdMD> viewIdsmd;
 
 	public BlocksMetaData(Map<Integer, BasicBlockInfo> blocksInfo, long[] bsizes, long[] dimensions, int total) {
-		this(Job.getId(), null, blocksInfo, bsizes, BlockConfig.BLOCK_UNIT, dimensions, total, 1);
+		this(Job.getId(),  blocksInfo, bsizes, BlockConfig.BLOCK_UNIT, total);
 	}
 
-	public BlocksMetaData(List<ViewId> viewIds, Map<Integer, BasicBlockInfo> blocksInfo, long[] bsizes, int blockUnit,
-			long[] dimensions, int total, int down) {
-		this(Job.getId(), viewIds, blocksInfo, bsizes, blockUnit, dimensions, total, down);
+	public BlocksMetaData( Map<Integer, BasicBlockInfo> blocksInfo, long[] bsizes, int blockUnit,
+			long[] dimensions, int total) {
+		this(Job.getId(),  blocksInfo, bsizes, blockUnit, total);
 	}
 
-	public BlocksMetaData(String jobId, List<ViewId> viewIds, Map<Integer, BasicBlockInfo> blocksInfo, long[] bsizes,
-			int blockUnit, long[] dimensions, int total, int down) {
+	public BlocksMetaData(String jobId, Map<Integer, BasicBlockInfo> blocksInfo, long[] bsizes,
+			int blockUnit, int total) {
 		super();
 		this.jobId = jobId;
-		this.downsample = down;
-		this.viewIdsmd = setViewIds(viewIds);
 		this.blockUnit = blockUnit;
 		this.total = total;
-		this.dimensions = dimensions;
 		this.blocksize = bsizes;
 		this.blocksInfo = blocksInfo;
 	}
@@ -58,10 +50,6 @@ public class BlocksMetaData extends SerializingFunctions {
 
 	public Map<Integer, BasicBlockInfo> getBlocksInfo() {
 		return blocksInfo;
-	}
-
-	public List<ViewId> getViewIds() {
-		return getViewIds(viewIdsmd);
 	}
 
 	public int getBlockUnit() {
@@ -84,23 +72,11 @@ public class BlocksMetaData extends SerializingFunctions {
 		this.blocksize = blocksize;
 	}
 
-	public long[] getDimensions() {
-		return dimensions;
-	}
-
-	public void setDimensions(long[] dimensions) {
-		this.dimensions = dimensions;
-	}
-
-	public int getDownsample() {
-		return downsample;
-	}
-
 	@Override
 	public String toString() {
-		String str = "\nMetaData: total:" + blocksInfo.size() + " dims:" + Util.printCoordinates(dimensions)
-				+ " blocks: " + Util.printCoordinates(blocksize) + "\n" + " downsample: " + downsample + "\n"
-				+ " viewIds: " + viewIdsmd + "\n" + " blockUnit: " + blockUnit + "\n";
+		String str = "\nMetaData: total:" + blocksInfo.size()
+				+ " blocks: " + Util.printCoordinates(blocksize) + "\n" +
+				" blockUnit: " + blockUnit + "\n";
 		String elms = "";
 		for (int i = 0; i < blocksInfo.size() % 10; i++) {
 			elms = elms + i + "-" + blocksInfo.get(i).toString() + " \n";

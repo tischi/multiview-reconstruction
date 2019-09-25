@@ -1,9 +1,11 @@
 package net.preibisch.distribution.headless;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
 
-import mpicbg.spim.data.sequence.ViewId;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.SftpException;
+
+import mpicbg.spim.data.SpimDataException;
 import net.imglib2.Interval;
 import net.preibisch.distribution.algorithm.task.FusionParams;
 import net.preibisch.distribution.algorithm.task.TaskFile;
@@ -20,17 +22,25 @@ public class ImplimentedTasks {
 	public static void fusion(FusionGUI gui) {
 
 		String taskPath = TaskFile.get(TaskFile.FUSION);
+		
 		String xml = Tools.getXML(gui.getSpimData().getBasePath().getAbsolutePath()).getAbsolutePath();
 		System.out.println("XML: "+xml);
 		double downsampling = gui.getDownsampling();
 		System.out.println("downsampling: "+downsampling);
 		Interval interval = gui.getBoundingBox();
 		System.out.println("interval: "+interval.toString());
-		List<ViewId> viewIds = new ArrayList<>(gui.getFusionGroups().get(0).getViews());
-		System.out.println("ViewsIds: "+viewIds.size());
-		FusionParams params = new FusionParams(xml, viewIds, interval, downsampling);
+		FusionParams params = new FusionParams(xml, gui.getFusionGroups(), interval, downsampling);
+		
+		
+		try {
+			ClusterWorkflow.run(params, taskPath);
+		} catch (IOException | JSchException | SftpException | SpimDataException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 
-			params.toJson(testFile);
+//			params.toJson(testFile);
 	
 	}
 

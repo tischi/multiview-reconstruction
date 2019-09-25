@@ -9,6 +9,7 @@ import javax.imageio.IIOException;
 
 import mpicbg.spim.data.SpimDataException;
 import mpicbg.spim.data.sequence.ViewId;
+import net.imglib2.Interval;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.type.numeric.real.FloatType;
 import net.preibisch.distribution.algorithm.controllers.items.DataExtension;
@@ -24,10 +25,10 @@ import net.preibisch.mvrecon.process.fusion.FusionTools;
 public class XMLFile extends ImgFile {
 	private final static String HDF5_FILE = "dataset.h5";
 
-	private List<ViewId> viewIds;
-	private BoundingBox bb;
+	private List<List<ViewId>> viewIds;
+	private Interval bb;
 	private SpimData2 spimData;
-	private int downsampling;
+	private double downsampling;
 	private List<File> relatedFiles;
 	// private T dataType;
 
@@ -39,12 +40,16 @@ public class XMLFile extends ImgFile {
 		return spimData;
 	}
 
-	public List<ViewId> viewIds() {
+	public List<List<ViewId>> viewIds() {
 		return viewIds;
 	}
 
-	public BoundingBox bb() {
+	public Interval bb() {
 		return bb;
+	}
+	@Override
+	public long[] getDimensions(int downsampling) {
+		return new BoundingBox(bb).getDimensions(downsampling);
 	}
 
 	public static XMLFile XMLFile(String path) throws SpimDataException, IOException {
@@ -77,18 +82,18 @@ public class XMLFile extends ImgFile {
 			down = 1;
 		else
 			down = (int) downsampling;
-		return new XMLFile(path, bbx, spimdata, down, viewIds, relatedFiles);
+		return new XMLFile(path, bbx, spimdata, down, list(viewIds), relatedFiles);
 
 	}
 
-	public static XMLFile XMLFile(String path, BoundingBox bb, int downsampling) throws IOException, SpimDataException {
+	public static XMLFile XMLFile(String path, Interval bb, double downsampling) throws IOException, SpimDataException {
 		final List<ViewId> viewIds = new ArrayList<ViewId>();
 		SpimData2 spimdata = new XmlIoSpimData2("").load(path);
 		viewIds.addAll(spimdata.getSequenceDescription().getViewDescriptions().values());
 		return XMLFile(path, bb,  downsampling, viewIds);
 	}
 	
-	public static XMLFile XMLFile(String path, BoundingBox bb, int downsampling, List<ViewId> viewIds) throws IOException, SpimDataException {
+	public static XMLFile XMLFile(String path, Interval bb, double downsampling, List<ViewId> viewIds) throws IOException, SpimDataException {
 
 		System.out.println("XML specific info loader ");
 		File f = new File(path);
@@ -103,11 +108,22 @@ public class XMLFile extends ImgFile {
 
 		List<File> relatedFiles = initRelatedFiles(f);
 
-		return new XMLFile(path, bb, spimdata, downsampling, viewIds, relatedFiles);
+		return new XMLFile(path, bb, spimdata, downsampling,  list(viewIds), relatedFiles);
 	}
 
 
-	public XMLFile(String path, BoundingBox bb, SpimData2 spimdata, int downsampling, List<ViewId> viewIds,
+//	public XMLFile(String path, BoundingBox bb, SpimData2 spimdata, int downsampling, List<ViewId> viewIds,
+//			List<File> relatedFiles) {
+//		this(path,bb,spimdata,downsampling,list(viewIds),relatedFiles);
+//	}
+	
+	private static List<List<ViewId>> list(List<ViewId> viewIds) {
+		List<List<ViewId>> l = new ArrayList<>();
+		l.add(viewIds);
+		return l;
+	}
+
+	public XMLFile(String path, Interval bb, SpimData2 spimdata, double downsampling, List<List<ViewId>> viewIds,
 			List<File> relatedFiles) {
 		super(path);
 
@@ -116,12 +132,14 @@ public class XMLFile extends ImgFile {
 		this.downsampling = downsampling;
 		this.spimData = spimdata;
 		this.relatedFiles = relatedFiles;
-
-		this.dims = bb.getDimensions(downsampling);
+		
+		this.dims = new BoundingBox(bb).getDimensions((int)downsampling);
 
 		// dataType = Util.getTypeFromInterval(fuse());
 		System.out.println(toString());
 	}
+
+
 
 	public static List<File> initRelatedFiles(File f) throws IOException {
 		List<File> files = new ArrayList<File>();
@@ -152,17 +170,21 @@ public class XMLFile extends ImgFile {
 	}
 
 	@Override
-	public RandomAccessibleInterval<FloatType> fuse() throws IOException {
-		return FusionTools.fuseVirtual(spimData, viewIds, bb, downsampling).getA();
+	public RandomAccessibleInterval<FloatType> fuse(int i) throws IOException {
+		return FusionTools.fuseVirtual(spimData, viewIds.get(i), bb, downsampling).getA();
 	}
 
 	@Override
-	public RandomAccessibleInterval<FloatType> fuse(BoundingBox bb) throws IOException {
-		return FusionTools.fuseVirtual(spimData, viewIds, bb, downsampling).getA();
+	public RandomAccessibleInterval<FloatType> fuse(BoundingBox bb,int i) throws IOException {
+		return FusionTools.fuseVirtual(spimData, viewIds.get(i), bb, downsampling).getA();
 	}
 
 	public static File fromStitchFolder(String inputPath) {
 		return Tools.getXML(inputPath);
+	}
+	@Override
+	public RandomAccessibleInterval<FloatType> fuse() throws IOException {
+		return fuse(0);
 	}
 
 }

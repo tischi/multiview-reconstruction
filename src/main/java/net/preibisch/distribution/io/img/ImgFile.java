@@ -29,13 +29,25 @@ public class ImgFile extends File implements ImgFunctions<FloatType> {
 	}
 
 	@Override
-	public RandomAccessibleInterval<FloatType> fuse() throws IOException{
+	public RandomAccessibleInterval<FloatType> fuse(int i) throws IOException{
 		throw new IOException();
 	}
 
 	@Override
-	public RandomAccessibleInterval<FloatType> fuse(BoundingBox bb) throws IOException {
+	public RandomAccessibleInterval<FloatType> fuse(BoundingBox bb,int i) throws IOException {
 		throw new IOException();
+	}
+
+	@Override
+	public RandomAccessibleInterval<FloatType> fuse() throws IOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public long[] getDimensions(int downsampling) {
+		return dims;
+		
 	}
 	
 }
