@@ -19,7 +19,7 @@ import net.preibisch.mvrecon.fiji.spimdata.SpimData2;
 import net.preibisch.mvrecon.fiji.spimdata.XmlIoSpimData2;
 import net.preibisch.mvrecon.process.interestpointregistration.pairwise.constellation.grouping.Group;
 
-public class FusionParams implements Params {
+public class FusionParams{
 	private String xml;
 	private List<List<ViewIdMD>> viewIds;
 	private Interval bb;
@@ -68,7 +68,8 @@ public class FusionParams implements Params {
 		return groups;
 	}
 
-	public FusionParams fromJson(String path) throws JsonSyntaxException, JsonIOException, FileNotFoundException {
+
+	public static FusionParams fromJson(String path) throws JsonSyntaxException, JsonIOException, FileNotFoundException {
 		Gson gson = new Gson();
 
 		FusionParams params = gson.fromJson(new FileReader(path), FusionParams.class);
@@ -106,7 +107,6 @@ public class FusionParams implements Params {
 		this.downsampling = downsampling;
 	}
 
-	@Override
 	public SpimData2 getSpimData() throws SpimDataException {
 		return new XmlIoSpimData2( "" ).load(xml);
 	}

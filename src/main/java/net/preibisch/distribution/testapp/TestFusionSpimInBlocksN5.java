@@ -43,7 +43,7 @@ public class TestFusionSpimInBlocksN5 {
 		MyLogger.log.info("Blocks: " + Util.printCoordinates(outputFile.getBlocksize()));
 
 		Map<Integer, BasicBlockInfo> blocks = MetadataGenerator.generateBlocks(inputFile.bb(), outputFile.getBlocksize());
-		BlocksMetaData md = new BlocksMetaData(blocks, Util.int2long(outputFile.getBlocksize()), inputFile.bb().getDimensions(1),blocks.size());
+		BlocksMetaData md = new BlocksMetaData(blocks, Util.int2long(outputFile.getBlocksize()), inputFile.getDimensions(1),blocks.size());
 		int total = md.getBlocksInfo().size();
 		System.out.println(md.toString());
 
@@ -77,7 +77,7 @@ class Task implements Runnable {
 		try {
 			MyLogger.log.info("Started " + i);
 			BoundingBox bb = new BoundingBox(Util.long2int(binfo.getMin()), Util.long2int(binfo.getMax()));
-			RandomAccessibleInterval<FloatType> block = input.fuse(bb);
+			RandomAccessibleInterval<FloatType> block = input.fuse(bb,0);
 			output.saveBlock(block, binfo.getGridOffset());
 			MyLogger.log.info("Block " + i + " saved !");
 		} catch (IOException e) {

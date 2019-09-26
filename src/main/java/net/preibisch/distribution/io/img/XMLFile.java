@@ -175,7 +175,7 @@ public class XMLFile extends ImgFile {
 	}
 
 	@Override
-	public RandomAccessibleInterval<FloatType> fuse(BoundingBox bb,int i) throws IOException {
+	public RandomAccessibleInterval<FloatType> fuse(Interval bb,int i) throws IOException {
 		return FusionTools.fuseVirtual(spimData, viewIds.get(i), bb, downsampling).getA();
 	}
 

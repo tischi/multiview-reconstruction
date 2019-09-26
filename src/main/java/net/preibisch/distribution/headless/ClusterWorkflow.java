@@ -194,17 +194,17 @@ public class ClusterWorkflow {
 			String taskScriptName = i + TASK_SHELL_NAME;
 			File scriptFile = Job.file(taskScriptName);
 			File metadataCluster = clusterFolderName.subfile(metadataFile);
-
+			File paramCluster = clusterFolderName.subfile(paramFile);
 			File clusterOutput = clusterFolderName.subfile(outputFile);
 
 			ClusterScript.generateTaskScript(scriptFile, taskFile.getName(), metadataCluster.getPath(),
-					inputCluster.getPath(), clusterOutput.getPath());
+					inputCluster.getPath(), clusterOutput.getPath(),paramCluster.getPath(),i);
 
 			// Task to prepare N5
 			String prepareScriptName = i + TaskType.file(TaskType.PREPARE);
 			File prepareShell = Job.file(prepareScriptName);
 			ClusterScript.generateTaskScript(TaskType.PREPARE, prepareShell, taskFile.getName(),
-					metadataCluster.getPath(), inputCluster.getPath(), clusterOutput.getPath(), "");
+					metadataCluster.getPath(), inputCluster.getPath(), clusterOutput.getPath(), "",i);
 
 			// Generate batch
 
